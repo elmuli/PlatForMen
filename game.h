@@ -23,6 +23,8 @@ void RenderPlayer(struct gameState *, SDL_Renderer *);
 
 void GetPlayerInput(SDL_Event *, struct gameState *, const bool *);
 
+void CreateMap(SDL_Texture *, SDL_Renderer *);
+
 void LoadMapTexture(SDL_Texture *,SDL_Renderer *);
 
 void CleanUp(struct gameState *);

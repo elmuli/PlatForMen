@@ -6,8 +6,8 @@
 #include <stdlib.h>
 
 void LoadPlayerTexture(struct Player *player, SDL_Renderer *renderer) {
-  SDL_Surface *Surface = SDL_LoadBMP("img/PlayerBMP.bmp");
-  if (!&Surface) {
+  SDL_Surface *Surface = SDL_LoadBMP("img/playerBMP.bmp");
+  if (Surface == NULL) {
     printf("Could not load player bmp\n");
     return;
   }
@@ -26,11 +26,13 @@ void SetPlayerRect(struct Player *player, int w, int h) {
 void UpdatePlayerPos(struct Player *player, int x, int y) {
   player->PosX += x;
   player->PosY += y;
+
+  player->playerRect.x = player->PosX;
+  player->playerRect.y = player->PosY;
 }
 
 void RenderPlayer(struct gameState *GS, SDL_Renderer *renderer) {
-  struct Player pl = GS->player;
-  SDL_RenderTexture(renderer, pl.playerTex, NULL, &pl.playerRect);
+  SDL_RenderTexture(renderer, GS->player.playerTex, NULL, &GS->player.playerRect);
 }
 
 void GetPlayerInput(SDL_Event *event, struct gameState *GS, const bool *keys) {
@@ -40,10 +42,10 @@ void GetPlayerInput(SDL_Event *event, struct gameState *GS, const bool *keys) {
   SDL_PumpEvents();
 
   if (keys[SDL_SCANCODE_W]) {
-    UpdatePlayerPos(&GS->player, 0, 0);
+    UpdatePlayerPos(&GS->player, 0, -speed);
   }
   if (keys[SDL_SCANCODE_S]) {
-    UpdatePlayerPos(&GS->player, 0, 0);
+    UpdatePlayerPos(&GS->player, 0, speed);
   }
   if (keys[SDL_SCANCODE_D]) {
     UpdatePlayerPos(&GS->player, speed, 0);
@@ -55,7 +57,7 @@ void GetPlayerInput(SDL_Event *event, struct gameState *GS, const bool *keys) {
 
 void LoadMapTexture(SDL_Texture *texture, SDL_Renderer *renderer){
   SDL_Surface *Surface = IMG_Load("img/Map.png");
-  if (!&Surface) {
+  if (Surface == NULL) {
     printf("Could not load Map img\n");
     return;
   }

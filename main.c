@@ -33,10 +33,9 @@ int main(int argc, char *argv[]){
   printf("-Map loaded-\n");
 
   GS.player.PosX = 50;
-  GS.player.PosY = 800;
+  GS.player.PosY = 70;
 
-  SetPlayerRect(&GS.player, 60, 50);
-  UpdatePlayerPos(&GS.player, 0, 0);
+  SetPlayerRect(&GS.player, 40, 40);
 
   bool GameIsRunning = true;
 
