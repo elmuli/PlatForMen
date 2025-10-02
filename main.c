@@ -24,20 +24,23 @@ int main(int argc, char *argv[]){
 
   printf("-Initialized SDL-\n");
 
-  LoadPlayerTexture(&GS.player, renderer);
+  LoadBitmapTexture(&GS.player.playerTex, renderer, "img/playerBMP.bmp");
 
   printf("-Player loaded-\n");
 
-  LoadMapTexture(GS.MapTexture, renderer);
+  CreateTileMap(&GS, renderer);
+  LoadMapTexture(&GS.TileMap.tileTexture, renderer);
 
   printf("-Map loaded-\n");
 
   GS.player.PosX = 50;
-  GS.player.PosY = 70;
+  GS.player.PosY = 600;
 
-  SetPlayerRect(&GS.player, 40, 40);
+  SetPlayerRect(&GS.player, 60, 60);
 
   bool GameIsRunning = true;
+  GS.player.hasJumped = 0;
+  GS.player.timeJumped = 0;
 
   while (GameIsRunning) {
     if (SDL_PollEvent(&windowEvent)) {
@@ -48,9 +51,20 @@ int main(int argc, char *argv[]){
 
     GetPlayerInput(&windowEvent, &GS, keys);
 
+    if(CheckCollision(&GS)){
+      GS.player.hasJumped = 0;
+    }
+
+    if(!CheckCollision(&GS) && !GS.player.hasJumped){
+      UpdatePlayerPos(&GS.player, 0, 3);
+      
+    }
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
+    DrawTileMap(&GS, renderer);
+    
     RenderPlayer(&GS, renderer);
 
     SDL_Delay(16);

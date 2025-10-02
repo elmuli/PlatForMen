@@ -8,23 +8,37 @@ struct Player {
   int PosX, PosY;
   SDL_Texture *playerTex;
   SDL_FRect playerRect;
+  int hasJumped;
+  int timeJumped;
+};
+
+struct tileMap {
+  int tilePxX, tilePxY;
+  int tilesAcross, tilesDown;
+  SDL_Texture *tileTexture;
+  SDL_FRect tileRect;
+  int tileType[252];
 };
 
 struct gameState {
   struct Player player;
-  SDL_Texture *MapTexture;
-  SDL_FRect MapRect;
+  struct tileMap TileMap;
 };
 
-void LoadPlayerTexture(struct Player *, SDL_Renderer *);
+void LoadBitmapTexture(SDL_Texture **, SDL_Renderer *, char[]);
+
 void SetPlayerRect(struct Player *, int, int);
 void UpdatePlayerPos(struct Player *, int, int);
 void RenderPlayer(struct gameState *, SDL_Renderer *);
 
 void GetPlayerInput(SDL_Event *, struct gameState *, const bool *);
+int CheckCollision(struct gameState *);
+
+void CreateTileMap(struct gameState *, SDL_Renderer *);
+void DrawTileMap(struct gameState *, SDL_Renderer *);
 
 void CreateMap(SDL_Texture *, SDL_Renderer *);
 
-void LoadMapTexture(SDL_Texture *,SDL_Renderer *);
+void LoadMapTexture(SDL_Texture **,SDL_Renderer *);
 
 void CleanUp(struct gameState *);
