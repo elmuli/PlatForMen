@@ -10,6 +10,7 @@ struct Player {
   SDL_FRect playerRect;
   int hasJumped;
   int timeJumped;
+  int jump;
 };
 
 struct tileMap {

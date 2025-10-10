@@ -9,7 +9,6 @@
 int speed = 5;
 int jumpSpeed = 3;
 int jumplenght = 8;
-int jump = 0;
 
 void LoadBitmapTexture(SDL_Texture **texture, SDL_Renderer *renderer, char path[]) {
   SDL_Surface *Surface = SDL_LoadBMP(path);
@@ -48,29 +47,25 @@ void GetPlayerInput(SDL_Event *event, struct gameState *GS, const bool *keys) {
 
   if (keys[SDL_SCANCODE_W]) {
     if (!GS->player.hasJumped){
-      jump = 1;
+      printf("jump\n");
+      GS->player.jump = 1;
     }  
   }
   if (keys[SDL_SCANCODE_S]) {
     //UpdatePlayerPos(&GS->player, 0, speed);
   }
   if (keys[SDL_SCANCODE_D]) {
-    UpdatePlayerPos(&GS->player, speed, 0);
+      UpdatePlayerPos(&GS->player, speed, 0);
   }
   if (keys[SDL_SCANCODE_A]) {
     UpdatePlayerPos(&GS->player, -speed, 0);
   }
 
-  if(jump){
+  if(GS->player.jump){
     if(GS->player.timeJumped <= jumplenght){
       UpdatePlayerPos(&GS->player, 0, -jumpSpeed);
       GS->player.hasJumped = 1;
       GS->player.timeJumped ++;
-    }
-    else{
-      GS->player.hasJumped = 0;
-      GS->player.timeJumped = 0;
-      jump = 0;
     }
   }
   
@@ -82,8 +77,8 @@ int CheckCollision(struct gameState *GS){
       float TileY = i/GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxY;
       float TileX = i%GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxX;
 
-      if(TileY < GS->player.PosY && TileX < GS->player.PosX && TileY > GS->player.PosY+GS->TileMap.tilePxY && TileX > GS->player.PosX+GS->TileMap.tilePxY){
-        printf("Collided\n");
+      if(TileY < GS->player.PosY && TileX < GS->player.PosX && TileY+GS->TileMap.tilePxY > GS->player.PosY && TileX+GS->TileMap.tilePxY > GS->player.PosX){
+        UpdatePlayerPos(&GS->player, 0, -(GS->player.PosY-TileY));
         return 1;
       }
     }
@@ -120,14 +115,14 @@ void CreateTileMap(struct gameState *GS, SDL_Renderer *renderer){
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1  

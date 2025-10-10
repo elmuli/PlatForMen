@@ -34,13 +34,14 @@ int main(int argc, char *argv[]){
   printf("-Map loaded-\n");
 
   GS.player.PosX = 50;
-  GS.player.PosY = 600;
+  GS.player.PosY = 400;
 
   SetPlayerRect(&GS.player, 60, 60);
 
   bool GameIsRunning = true;
   GS.player.hasJumped = 0;
   GS.player.timeJumped = 0;
+  GS.player.jump = 0;
 
   while (GameIsRunning) {
     if (SDL_PollEvent(&windowEvent)) {
@@ -53,11 +54,10 @@ int main(int argc, char *argv[]){
 
     if(CheckCollision(&GS)){
       GS.player.hasJumped = 0;
-    }
-
-    if(!CheckCollision(&GS) && !GS.player.hasJumped){
-      UpdatePlayerPos(&GS.player, 0, 3);
-      
+      GS.player.timeJumped = 0;
+      GS.player.jump = 0;
+    }else if (!CheckCollision(&GS) && !GS.player.hasJumped){
+      UpdatePlayerPos(&GS.player, 0, 5);
     }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
