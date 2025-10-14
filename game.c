@@ -7,8 +7,8 @@
 #include <string.h>
 
 int speed = 5;
-int jumpSpeed = 3;
-int jumplenght = 8;
+int jumpSpeed = 9;
+int jumplenght = 6;
 
 void LoadBitmapTexture(SDL_Texture **texture, SDL_Renderer *renderer, char path[]) {
   SDL_Surface *Surface = SDL_LoadBMP(path);
@@ -36,39 +36,45 @@ void UpdatePlayerPos(struct Player *player, int x, int y) {
   player->playerRect.y = player->PosY-player->playerRect.h;
 }
 
+void RotatePlayer(struct Player *player, int dir){
+  player->playerRect.w = 60*(dir);
+}
+
 void RenderPlayer(struct gameState *GS, SDL_Renderer *renderer) {
   SDL_RenderTexture(renderer, GS->player.playerTex, NULL, &GS->player.playerRect);
 }
 
 void GetPlayerInput(SDL_Event *event, struct gameState *GS, const bool *keys) {
 
-  
   SDL_PumpEvents();
 
   if (keys[SDL_SCANCODE_W]) {
-    if (!GS->player.hasJumped){
-      printf("jump\n");
+    if (!GS->player.hasJumped && GS->player.isGrounded){
       GS->player.jump = 1;
-    }  
+    }
   }
   if (keys[SDL_SCANCODE_S]) {
     //UpdatePlayerPos(&GS->player, 0, speed);
   }
   if (keys[SDL_SCANCODE_D]) {
-      UpdatePlayerPos(&GS->player, speed, 0);
+    UpdatePlayerPos(&GS->player, speed, 0);
+    RotatePlayer(&GS->player, 1);
   }
   if (keys[SDL_SCANCODE_A]) {
     UpdatePlayerPos(&GS->player, -speed, 0);
+    RotatePlayer(&GS->player, -1);
   }
 
   if(GS->player.jump){
-    if(GS->player.timeJumped <= jumplenght){
+    if(GS->player.timeJumped < jumplenght){
       UpdatePlayerPos(&GS->player, 0, -jumpSpeed);
       GS->player.hasJumped = 1;
       GS->player.timeJumped ++;
     }
+    else{
+      GS->player.jump = 0;
+    }
   }
-  
 }
 
 int CheckCollision(struct gameState *GS){
@@ -77,7 +83,7 @@ int CheckCollision(struct gameState *GS){
       float TileY = i/GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxY;
       float TileX = i%GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxX;
 
-      if(TileY < GS->player.PosY && TileX < GS->player.PosX && TileY+GS->TileMap.tilePxY > GS->player.PosY && TileX+GS->TileMap.tilePxY > GS->player.PosX){
+      if(TileY <= GS->player.PosY && TileX <= GS->player.PosX && TileY+GS->TileMap.tilePxY >= GS->player.PosY && TileX+GS->TileMap.tilePxX >= GS->player.PosX){
         UpdatePlayerPos(&GS->player, 0, -(GS->player.PosY-TileY));
         return 1;
       }
@@ -123,7 +129,7 @@ void CreateTileMap(struct gameState *GS, SDL_Renderer *renderer){
     0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0,  
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1  
   };

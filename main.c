@@ -42,6 +42,7 @@ int main(int argc, char *argv[]){
   GS.player.hasJumped = 0;
   GS.player.timeJumped = 0;
   GS.player.jump = 0;
+  GS.player.isGrounded = 0;
 
   while (GameIsRunning) {
     if (SDL_PollEvent(&windowEvent)) {
@@ -55,8 +56,8 @@ int main(int argc, char *argv[]){
     if(CheckCollision(&GS)){
       GS.player.hasJumped = 0;
       GS.player.timeJumped = 0;
-      GS.player.jump = 0;
-    }else if (!CheckCollision(&GS) && !GS.player.hasJumped){
+      GS.player.isGrounded = 1;
+    }else if (!CheckCollision(&GS) && !GS.player.jump){
       UpdatePlayerPos(&GS.player, 0, 5);
     }
 
@@ -66,6 +67,11 @@ int main(int argc, char *argv[]){
     DrawTileMap(&GS, renderer);
     
     RenderPlayer(&GS, renderer);
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDebugTextFormat(renderer, 10, 10, "Jump: %i", GS.player.jump);
+    SDL_RenderDebugTextFormat(renderer, 10, 25, "isGrounded: %i", GS.player.isGrounded);
+    SDL_RenderDebugTextFormat(renderer, 10, 40, "time jumped: %i", GS.player.timeJumped);
 
     SDL_Delay(16);
 

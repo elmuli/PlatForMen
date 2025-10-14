@@ -11,6 +11,7 @@ struct Player {
   int hasJumped;
   int timeJumped;
   int jump;
+  int isGrounded;
 };
 
 struct tileMap {
@@ -31,6 +32,7 @@ void LoadBitmapTexture(SDL_Texture **, SDL_Renderer *, char[]);
 void SetPlayerRect(struct Player *, int, int);
 void UpdatePlayerPos(struct Player *, int, int);
 void RenderPlayer(struct gameState *, SDL_Renderer *);
+void RotatePlayer(struct Player *, int);
 
 void GetPlayerInput(SDL_Event *, struct gameState *, const bool *);
 int CheckCollision(struct gameState *);
