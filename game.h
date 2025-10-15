@@ -17,9 +17,10 @@ struct Player {
 struct tileMap {
   int tilePxX, tilePxY;
   int tilesAcross, tilesDown;
+  int tileOffsetX, tileOffsetY;
   SDL_Texture *tileTexture;
   SDL_FRect tileRect;
-  int tileType[252];
+  int tileType[320];
 };
 
 struct gameState {

@@ -54,7 +54,6 @@ void GetPlayerInput(SDL_Event *event, struct gameState *GS, const bool *keys) {
     }
   }
   if (keys[SDL_SCANCODE_S]) {
-    //UpdatePlayerPos(&GS->player, 0, speed);
   }
   if (keys[SDL_SCANCODE_D]) {
     UpdatePlayerPos(&GS->player, speed, 0);
@@ -78,10 +77,10 @@ void GetPlayerInput(SDL_Event *event, struct gameState *GS, const bool *keys) {
 }
 
 int CheckCollision(struct gameState *GS){
-  for(int i=0; i<253;){
+  for(int i=0; i<320;){
     if (GS->TileMap.tileType[i] == 1){
-      float TileY = i/GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxY;
-      float TileX = i%GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxX;
+      float TileY = i/GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxY+GS->TileMap.tileOffsetY;
+      float TileX = i%GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxX+GS->TileMap.tileOffsetX;
 
       if(TileY <= GS->player.PosY && TileX <= GS->player.PosX && TileY+GS->TileMap.tilePxY >= GS->player.PosY && TileX+GS->TileMap.tilePxX >= GS->player.PosX){
         UpdatePlayerPos(&GS->player, 0, -(GS->player.PosY-TileY));
@@ -114,24 +113,26 @@ void CreateTileMap(struct gameState *GS, SDL_Renderer *renderer){
   GS->TileMap.tileRect.w = (float)GS->TileMap.tilePxX;
   GS->TileMap.tileRect.h = (float)GS->TileMap.tilePxY;
 
-  GS->TileMap.tilesAcross = 18;
-  GS->TileMap.tilesDown = 14;
+  GS->TileMap.tilesAcross = 20;
+  GS->TileMap.tilesDown = 16;
 
-  int grid[252] = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0,  
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1  
+  int grid[320] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,  
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 
   };
 
   memcpy(GS->TileMap.tileType, grid, sizeof(GS->TileMap.tileType));
@@ -139,10 +140,10 @@ void CreateTileMap(struct gameState *GS, SDL_Renderer *renderer){
 }
 
 void DrawTileMap(struct gameState *GS, SDL_Renderer *renderer){
-  for (int i = 0; i <= 252;) {
+  for (int i = 0; i <= 320;) {
     if (GS->TileMap.tileType[i] == 1){
-      float TileY = i/GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxY;
-      float TileX = i%GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxX;
+      float TileY = i/GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxY+GS->TileMap.tileOffsetY;
+      float TileX = i%GS->TileMap.tilesAcross*(float)GS->TileMap.tilePxX+GS->TileMap.tileOffsetX;
 
       GS->TileMap.tileRect.x = TileX;
       GS->TileMap.tileRect.y = TileY;
